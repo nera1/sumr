@@ -66,7 +66,7 @@ const HeaderMenu: FunctionComponent = () => {
                 <Mail />
                 <span
                   onClick={() => {
-                    window.open(`mailto:ekd594ff@gmail.com`);
+                    window.open(`mailto:nera4936@gmail.com`);
                   }}
                 >
                   Mail
