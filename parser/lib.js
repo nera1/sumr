@@ -42,7 +42,7 @@ function createTitleList(array) {
     if (title) {
       titleList.push({
         id: item["id"],
-        title: title.toLowerCase(),
+        title: title,
         category: item["category"],
         preview: item["preview"] || null,
         created: item["created"],
