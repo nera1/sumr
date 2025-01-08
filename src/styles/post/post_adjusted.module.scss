@@ -53,6 +53,18 @@
 }
 
 .markdown {
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  ul, ol {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  li {
+    margin-bottom: 1rem;
+  }
+
   color-scheme: dark;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -325,7 +337,7 @@
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-  margin-top: 40px;
+  margin-top: 24px;
   margin-bottom: 16px;
   font-weight: 600;
   line-height: 1.25;
@@ -372,8 +384,8 @@
 
 .markdown ul,
 .markdown ol {
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin-top: 0;
+  margin-bottom: 0;
   padding-left: 2em;
 }
 
