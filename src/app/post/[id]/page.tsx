@@ -21,6 +21,8 @@ import PostNavigator from "./post-navigator";
 import ScrollTop from "./scroll-top";
 import Bread from "./bread";
 
+import Loader from "@/components/loader/loader";
+
 import GetCode from "@/plugins/get-code";
 import AddCopyButton from "@/plugins/add-copy-button";
 
@@ -139,7 +141,7 @@ export default function PostPage({
   params: Promise<{ id: string }>;
 }) {
   return (
-    <Suspense fallback={<div></div>}>
+    <Suspense fallback={<Loader />}>
       <Post params={params} />
     </Suspense>
   );
