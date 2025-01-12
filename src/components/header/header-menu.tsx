@@ -10,7 +10,13 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-import { Mail, Github, Menu, GitCompareArrows } from "lucide-react";
+import {
+  Mail,
+  Github,
+  Menu,
+  GitCompareArrows,
+  BriefcaseBusiness,
+} from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -42,36 +48,30 @@ const HeaderMenu: FunctionComponent = () => {
                 setOpen(false);
               }}
             >
-              <CommandItem className="cursor-pointer">
-                <Github />
-                <span
-                  onClick={() => {
-                    window.open("https://github.com/ekd594ff");
-                  }}
-                >
-                  Github
-                </span>
-              </CommandItem>
-              <CommandItem className="cursor-pointer" onClick={() => {}}>
-                <GitCompareArrows />
-                <span
-                  onClick={() => {
-                    window.open("https://github.com/nera1/sumr");
-                  }}
-                >
-                  Repository
-                </span>
-              </CommandItem>
-              <CommandItem className="cursor-pointer">
-                <Mail />
-                <span
-                  onClick={() => {
-                    window.open(`mailto:nera4936@gmail.com`);
-                  }}
-                >
-                  Mail
-                </span>
-              </CommandItem>
+              <a href="https://github.com/nera1" target="_blank">
+                <CommandItem className="cursor-pointer">
+                  <Github />
+                  <span>Github</span>
+                </CommandItem>
+              </a>
+              <a href="https://github.com/nera1/sumr" target="_blank">
+                <CommandItem className="cursor-pointer" onClick={() => {}}>
+                  <GitCompareArrows />
+                  <span>Repository</span>
+                </CommandItem>
+              </a>
+              <a href="mailto:nera4936@gmail.com" target="_blank">
+                <CommandItem className="cursor-pointer">
+                  <Mail />
+                  <span>Mail</span>
+                </CommandItem>
+              </a>
+              <a href="https://pf.sumr.it" target="_blank">
+                <CommandItem className="cursor-pointer">
+                  <BriefcaseBusiness />
+                  <span>Portfolio</span>
+                </CommandItem>
+              </a>
             </CommandGroup>
           </CommandList>
         </Command>
