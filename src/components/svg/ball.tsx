@@ -1,12 +1,12 @@
 import { FunctionComponent, SVGProps } from "react";
 
-interface CustomSVGProps extends SVGProps<SVGSVGElement> {
+interface BallSVGProps extends SVGProps<SVGSVGElement> {
   className?: string;
   width?: number;
   height?: number;
 }
 
-const Ball: FunctionComponent<CustomSVGProps> = ({ className, ...props }) => (
+const Ball: FunctionComponent<BallSVGProps> = ({ className, ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
