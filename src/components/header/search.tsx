@@ -5,31 +5,62 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon } from "lucide-react";
 
+type SearchState = {
+  input: string;
+  open: boolean;
+};
+
 const Search: FunctionComponent = () => {
-  const [input, setInput] = useState<string>("");
+  const [searchState, setSearchState] = useState<SearchState>({
+    input: "",
+    open: false,
+  });
   const router = useRouter();
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const { input } = searchState;
     if (event.key === "Enter" && input.trim()) {
       router.push(`/?search=${encodeURIComponent(input)}`);
       setTimeout(() => {
-        setInput("");
+        setSearchState((prev) => ({ ...prev, input: "" }));
       }, 10);
     }
   };
 
   return (
-    <div className="px-3 flex items-center border border-input rounded-md p-1 bg-background h-9">
-      <SearchIcon size={16} />
+    <div
+      className={`flex justify-center items-center border border-input rounded-md bg-background h-9 ${
+        searchState.open ? "px-3" : "w-9"
+      }`}
+    >
+      <SearchIcon
+        size={16}
+        onClick={() => {
+          const { open, input } = searchState;
+          if (open && input.trim()) {
+            router.push(`/?search=${encodeURIComponent(input)}`);
+            setTimeout(() => {
+              setSearchState((prev) => ({ ...prev, input: "" }));
+            }, 10);
+          } else {
+            setSearchState((prev) => ({ ...prev, open: true }));
+          }
+        }}
+      />
       <Input
         type="text"
-        value={input}
+        value={searchState.input}
         onChange={(event) => {
           const { value } = event.target;
-          setInput(value);
+          setSearchState((prev) => ({
+            ...prev,
+            input: value.trim(),
+          }));
         }}
         onKeyDown={handleKeyDown}
-        className="border-none bg-transparent focus:ring-0 focus-visible:ring-0 placeholder:text-muted-foreground w-28"
+        className={`border-none transition-[width] duration-500 ease-out bg-transparent focus:ring-0 focus-visible:ring-0 placeholder:text-muted-foreground ${
+          searchState.open ? "w-28" : "w-0 px-0"
+        }`}
       />
     </div>
   );
