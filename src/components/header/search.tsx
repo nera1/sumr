@@ -35,6 +35,7 @@ const Search: FunctionComponent = () => {
     >
       <SearchIcon
         size={16}
+        className="cursor-pointer"
         onClick={() => {
           const { open, input } = searchState;
           if (open && input.trim()) {
@@ -57,9 +58,15 @@ const Search: FunctionComponent = () => {
             input: value.trim(),
           }));
         }}
+        onBlur={() => {
+          setSearchState((prev) => ({
+            ...prev,
+            open: false,
+          }));
+        }}
         onKeyDown={handleKeyDown}
         className={`border-none transition-[width] duration-500 ease-out bg-transparent focus:ring-0 focus-visible:ring-0 placeholder:text-muted-foreground ${
-          searchState.open ? "w-28" : "w-0 px-0"
+          searchState.open ? "w-28" : "w-0 px-0 text-transparent"
         }`}
       />
     </div>
