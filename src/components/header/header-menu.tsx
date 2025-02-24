@@ -17,6 +17,7 @@ import {
   GitCompareArrows,
   BriefcaseBusiness,
   RotateCcw,
+  Grid3X3,
 } from "lucide-react";
 import {
   Popover,
@@ -26,7 +27,11 @@ import {
 
 import styles from "@/styles/header-menu/header-menu.module.scss";
 
-const HeaderMenu: FunctionComponent = () => {
+interface HeaderMenu {
+  onDialogOpen: () => void;
+}
+
+const HeaderMenu: FunctionComponent<HeaderMenu> = (props) => {
   const [open, setOpen] = useState<boolean>(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -79,6 +84,13 @@ const HeaderMenu: FunctionComponent = () => {
                   <span>Again</span>
                 </CommandItem>
               </a>
+              <CommandItem
+                className="cursor-pointer"
+                onSelect={props.onDialogOpen}
+              >
+                <Grid3X3 />
+                <span>Contributions</span>
+              </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
