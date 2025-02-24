@@ -17,7 +17,6 @@ import {
   GitCompareArrows,
   BriefcaseBusiness,
   RotateCcw,
-  Grid3X3,
 } from "lucide-react";
 import {
   Popover,
