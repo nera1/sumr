@@ -77,7 +77,7 @@ const Header: FunctionComponent = () => {
     if (headerState.isOpen) {
       setTimeout(() => {
         setHeaderState((prev) => ({ ...prev, isLoaded: true }));
-      }, 1000);
+      }, 2000);
     }
   }, [headerState.isOpen]);
 
