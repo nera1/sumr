@@ -28,8 +28,6 @@ import AddCopyButton from "@/plugins/add-copy-button";
 
 import db from "@/data/db.json";
 
-import { dateString } from "@/util";
-
 import { Database, Markdown } from "@/types";
 
 import remarkAddEmptyTitle from "@/plugins/rehype-codeblock-with-figure";
