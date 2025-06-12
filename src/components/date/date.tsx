@@ -8,7 +8,7 @@ type Date = {
 };
 
 const DateString: FunctionComponent<Date> = ({ date }) => {
-  const [dateState, setDateState] = useState<string>(dateString(date));
+  const [dateState] = useState<string>(dateString(date));
   return <>{dateState}</>;
 };
 
