@@ -8,10 +8,9 @@ import { Skeleton } from "../ui/skeleton";
 
 import { PostListItem as PostListItemProps } from "@/types/post-list-item";
 
-import { dateString } from "@/util";
+import DateString from "../date/date";
 
 import styles from "@/styles/post-list-item/post-list-item.module.scss";
-import DateString from "../date/date";
 
 const PostListItem: FunctionComponent<PostListItemProps> = ({
   category = "",
