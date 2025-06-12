@@ -11,6 +11,7 @@ import { PostListItem as PostListItemProps } from "@/types/post-list-item";
 import { dateString } from "@/util";
 
 import styles from "@/styles/post-list-item/post-list-item.module.scss";
+import DateString from "../date/date";
 
 const PostListItem: FunctionComponent<PostListItemProps> = ({
   category = "",
@@ -71,7 +72,7 @@ const PostListItem: FunctionComponent<PostListItemProps> = ({
           {category || <Skeleton className="h-4 w-20" />}
         </div>
         <div className={`${styles["date"]} text-xs text-muted-foreground`}>
-          {created ? dateString(created) : <Skeleton className="h-4 w-20" />}
+          <DateString date={created} />
         </div>
       </div>
     </li>

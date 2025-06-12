@@ -22,13 +22,7 @@
   h6 {
   }
   & * {
-    color: variables.$font-default;
-  }
-  & ul > li {
-    list-style-type: disc;
-  }
-  & ol > li {
-    list-style-type: decimal;
+    color: variables.$font-light;
   }
   :global(.copy-button) {
     width: 20px;
@@ -50,6 +44,26 @@
       background-color: variables.$black-900;
     }
   }
+
+  & ul,
+  & ol {
+    width: 100%; // 원하는 너비가 있으면 변경
+    margin: 1rem 0; // 리스트 위아래 여백
+    padding-left: 1.5rem; // 들여쓰기 간격
+  }
+
+  & ul > li,
+  & ol > li {
+    margin-bottom: 0.5rem; // 항목 간 세로 간격
+  }
+
+  // 기존 list-style 설정은 그대로 유지됩니다
+  & ul > li {
+    list-style-type: disc;
+  }
+  & ol > li {
+    list-style-type: decimal;
+  }
 }
 
 .markdown {
@@ -60,7 +74,7 @@
   line-height: 1.5;
   word-wrap: break-word;
   box-sizing: border-box;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .markdown .octicon {

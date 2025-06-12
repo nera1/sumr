@@ -37,6 +37,7 @@ import remarkAddEmptyTitle from "@/plugins/rehype-codeblock-with-figure";
 import removeExcludedTags from "@/util/remove-excluded-tags";
 
 import styles from "@/styles/post/post.module.scss";
+import DateString from "@/components/date/date";
 
 export async function generateStaticParams() {
   const dictionary = db.dictionary;
@@ -77,7 +78,7 @@ const Post = async function ({ params }: { params: Promise<{ id: string }> }) {
     .use(GetCode)
     .use(rehypePrettyCode)
     .use(AddCopyButton)
-    .use(rehypeStringify, { allowDangerousHtml: true }) // HTML 직렬화
+    .use(rehypeStringify, { allowDangerousHtml: true })
     .process(file);
 
   value = removeExcludedTags(value);
@@ -87,7 +88,9 @@ const Post = async function ({ params }: { params: Promise<{ id: string }> }) {
       <title>{title}</title>
       <Bread title={title} category={category} />
       <h1 className="text-4xl font-extrabold tracking-tight">{title}</h1>
-      <p className="text-sm text-muted-foreground">{dateString(created)}</p>
+      <p className="text-sm text-muted-foreground">
+        <DateString date={created} />
+      </p>
       <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex w-max space-x-2 py-2 px-1">
           {tags.map((tag, index) => (
