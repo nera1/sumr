@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   output: "export", // Static export mode
   reactStrictMode: false,
   assetPrefix: debug ? `/` : "",
-  basePath: debug ? `` : "/",
+  basePath: debug ? `` : "",
   trailingSlash: true,
 };
 
