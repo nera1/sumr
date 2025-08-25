@@ -67,12 +67,6 @@ const HeaderMenu: FunctionComponent = () => {
                   <span>Mail</span>
                 </CommandItem>
               </a>
-              <a href="https://again.sumr.it" target="_blank">
-                <CommandItem className="cursor-pointer">
-                  <RotateCcw />
-                  <span>Again</span>
-                </CommandItem>
-              </a>
             </CommandGroup>
           </CommandList>
         </Command>
