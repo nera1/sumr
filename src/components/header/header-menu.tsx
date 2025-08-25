@@ -67,12 +67,6 @@ const HeaderMenu: FunctionComponent = () => {
                   <span>Mail</span>
                 </CommandItem>
               </a>
-              <a href="https://pf.sumr.it" target="_blank">
-                <CommandItem className="cursor-pointer">
-                  <BriefcaseBusiness />
-                  <span>Portfolio</span>
-                </CommandItem>
-              </a>
               <a href="https://again.sumr.it" target="_blank">
                 <CommandItem className="cursor-pointer">
                   <RotateCcw />
