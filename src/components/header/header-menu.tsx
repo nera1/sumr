@@ -10,14 +10,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-import {
-  Mail,
-  Github,
-  Menu,
-  GitCompareArrows,
-  BriefcaseBusiness,
-  RotateCcw,
-} from "lucide-react";
+import { Mail, Github, Menu, GitCompareArrows } from "lucide-react";
 import {
   Popover,
   PopoverContent,
