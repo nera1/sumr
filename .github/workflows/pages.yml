@@ -1,5 +1,5 @@
 # .github/workflows/pages.yml
-name: Deploy to GitHub Pages (Next.js)
+name: sumr
 
 on:
   push:
@@ -24,39 +24,40 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: yarn
+      # Yarn 4는 corepack으로 버전 고정
+      - name: Enable Corepack
+        run: corepack enable
 
-      # GitHub Pages를 Actions로 사용하도록 활성화 (404 방지의 핵심)
+      # (선택) Yarn Berry 캐시 복원 - .yarn/cache 디렉터리
+      - name: Restore Yarn cache
+        uses: actions/cache@v4
+        with:
+          path: .yarn/cache
+          key: yarn-cache-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
       - id: configurepages
         uses: actions/configure-pages@v5
         with:
           enablement: true
 
-      # (선택) Next.js 캐시
-      - name: Restore Next.js cache
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+      # ✅ Yarn 4 권장 플래그: --immutable
+      #   (레포에 .yarn/cache까지 커밋했다면 --immutable-cache도 추가 가능)
+      - name: Install deps (Yarn 4)
+        run: yarn install --immutable
+        env:
+          GITHUB_PAGES: true
 
-      - run: yarn install --frozen-lockfile
-
-      # Next.js 정적 빌드 + export
-      # - output: 'export' 가 설정돼 있다면 build만으로 out/이 생기는 버전도 있으나,
-      #   확실히 하기 위해 export를 분리해서 실행합니다.
+      # Next.js 빌드 + export (out/ 생성)
       - name: Build
         run: yarn build
         env:
-          # 필요한 경우 프로젝트에서 참조해 basePath/assetPrefix에 반영할 수 있음
-          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
           EXPORT: 1
           UNOPTIMIZED: 1
+          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
 
       - name: Export static site
         run: |
-          if yarn -s run | grep -q "^export"; then
+          if yarn -s run | grep -q "^export$"; then
             yarn export
           else
             npx next export
@@ -70,7 +71,6 @@ jobs:
           path: ./out
 
   deploy:
-    # 배포 잡
     runs-on: ubuntu-latest
     needs: build
     environment:
