@@ -1,0 +1,181 @@
+---
+title: 'Jmeter 설정 및 사용'
+date: '2025-08-10'
+lastmod: '2025-08-10'
+tags: ['springboot', 'jmeter']
+draft: false
+summary: '테스트를 위한 Jmeter 설정'
+authors: ['default']
+---
+
+# Jmeter
+
+- JMeter는 Apache 재단에서 개발한 오픈소스 성능 테스트 도구입니다
+- 시스템의 성능과 부하를 측정하는데 주로 사용됩니다
+- API를 검증 할 때, 그 시나리오와 방법을 정하고, 테스트 결과를 HTML 리포트로 제공합니다
+- 부하 테스트가 아닌, 간단한 응답시간 측정을 통해 테스트합니다
+
+### Jmeter 설치, 실행
+
+![jmeter](/static/imgs/8/2.png)
+
+- [Jmeter 공식 페이지](https://jmeter.apache.org/download_jmeter.cgi)
+- 압축을 해제하고, 해당 폴더 /bin 경로에서
+
+- Mac OS
+
+```bash
+./jmeter
+```
+
+- Windows /bin/jmeter.bat 실행
+
+### Jmeter 설정
+
+![jmeter](/static/imgs/8/3.png)
+
+- Thread Group을 생성합니다
+
+![jmeter](/static/imgs/8/4.png)
+
+- Action to be taken after a Sampler error
+  - Continue: 에러와 상관없이 계속 진행
+  - Start Next Thread Loop: 현재 루프를 종료하고 다음 루프 실행
+  - Stop Thread: 현재 쓰레드만 중지
+  - Stop Test: 전체 테스트 중지
+  - Stop Test Now: 즉시 테스트 중지 (현재 실행 중 요청도 중단)
+
+- Number of Threads
+  - 예: 100으로 설정하면 100명의 사용자가 동시에 접속하는 상황을 시뮬레이션
+
+- Ramp-up period (seconds)
+  - Number of Threads=10, Ramp-up=5 → 5초 동안 10명의 사용자가 순차적으로 시작 (0.5초마다 1명)
+
+- Loop Count
+  - 각 쓰레드가 테스트를 몇 번 반복할지 지정
+  - Infinite 체크 시 무한 반복
+
+- Same user on each iteration
+  - 체크 시, 반복 실행 시에도 동일한 사용자 세션(쿠키, 로그인 정보 등) 유지
+  - 체크 해제 시, 매 반복마다 새로운 사용자로 간주
+
+- Delay Thread creation until needed
+  - 필요한 시점이 되기 전까지 쓰레드를 생성하지 않음
+
+- Specify Thread lifetime
+  - 쓰레드의 실행 시간을 초 단위로 직접 지정 가능
+
+- Duration (seconds): 전체 실행 시간
+- Startup delay (seconds): 쓰레드 시작 지연 시간
+
+![jmeter](/static/imgs/8/5.png)
+
+- Config Element > CSV Data Set Config 생성합니다
+
+![jmeter](/static/imgs/8/6.png)
+
+```bash
+# keyword.csv
+친구
+게임
+연애
+결혼
+world
+건강
+운동
+```
+
+- 테스트를 위해, 100개의 일상에서 자주 쓰이는 영어, 한글 단어를 선택하여 해당 단어를 줄바꿈으로 구분한 `keyword.csv` 파일을 제작하였습니다
+
+- 이 파일은 테스트를 위해 `/search?keyword=[keyword]&size=10` 엔드포인트의 keyword에 들어갈 단어들입니다
+
+- Filename : 읽어올 CSV 파일의 경로
+
+- File encoding : 파일 인코딩 방식 (예: UTF-8, EUC-KR 등)
+  - 빈 값이면 JMeter 기본 인코딩 사용
+
+- Variable Names (comma-delimited) : CSV 파일에서 읽은 데이터를 저장할 변수 이름 (쉼표로 구분 가능)
+  - 예: keyword → CSV의 첫 번째 컬럼 데이터를 [keyword] 로 참조 가능
+
+- Ignore first line (only used if Variable Names is not empty) 첫 번째 줄을 무시할지 여부
+  - True → CSV 첫 행이 헤더라면 데이터로 쓰지 않음
+
+- Delimiter (use '\t' for tab) : CSV에서 컬럼을 구분하는 문자
+  - 기본값: , (쉼표)
+  - 탭 구분자를 쓰려면 \t 입력
+
+- Allow quoted data : CSV 값이 따옴표(")로 감싸져 있는 것을 허용할지 여부
+
+- Recycle on EOF : CSV 끝(EOF)에 도달했을 때 다시 처음부터 읽을지 여부
+  - True → 반복 읽기
+  - False → EOF 도달 시 더 이상 데이터 읽지 않음
+
+- Stop thread on EOF(CSV 끝에 도달했을 때 쓰레드를 중지할지 여부)
+  - True → EOF 도달 시 해당 쓰레드 종료
+
+- Sharing mode(CSV 데이터 공유 범위)
+  - All threads: 모든 쓰레드가 같은 데이터 순서로 공유
+  - Current thread group: 현재 Thread Group 내에서만 공유
+  - Current thread: 각 쓰레드가 독립적으로 CSV 데이터 읽음
+  - Identifier: 동일 식별자(ID)로 지정한 쓰레드끼리만 공유
+
+![jmeter](/static/imgs/8/7.png)
+
+- Config Element > HTTP Request Defaults 생성합니다
+
+![jmeter](/static/imgs/8/8.png)
+
+- 요청을 보낼 주소의 프로토콜 `https/http`, `IP/domain`, `Port`
+- 구체적인 요청의 Path는 여기서 적지 않습니다
+
+![jmeter](/static/imgs/8/9.png)
+
+- Sampler > HTTP Request 생성합니다
+
+![jmeter](/static/imgs/8/10.png)
+
+- 프로토콜, IP/Domain, Port 등은 HTTP Request Defaults에서 설정하였기에 비워둡니다
+- HTTP Request 의 `Method`, `Path`, `Parameters` 등을 설정합니다
+- CSV 파일로 지정한 Parameter는 위와 같이 `CSV Data Set Config`에서 설정한 Variable Names과 일치하도록 설정합니다
+
+![jmeter](/static/imgs/8/11.png)
+
+- Timer > Uniform Random Timer 생성합니다
+
+![jmeter](/static/imgs/8/12.png)
+
+- 필수적인 사항은 아니지만 모든 요청이 일정한 간격의 비현실적인 요청이 아닌, 랜덤 딜레이를 부여하여 현실적인 트래픽 패턴을 만들어줍니다
+
+- Random Delay Maximum (in milliseconds)
+  - 추가할 랜덤 지연의 최대값 (밀리초)
+  - 예: 400 → 0~400ms 범위에서 랜덤 값이 선택됨
+
+- Constant Delay Offset (in milliseconds)
+  - 항상 추가되는 고정 지연 시간 (밀리초)
+  - 예: 200 → 위 랜덤 지연과 별도로 항상 200ms 추가됨
+
+- 실제 지연 시간 계산
+  - 실제 지연 시간 = Constant Delay Offset + (0 ~ Random Delay Maximum)
+  - 예를 들어 지금 설정(Offset=200, Max=400)이라면, 최소 지연: 200ms (랜덤값이 0일 때), 최대 지연: 600ms (랜덤값이 400일 때) 즉, 요청마다 200~600ms 범위에서 무작위로 딜레이 발생
+
+![jmeter](/static/imgs/8/13.png)
+
+- 설정이 끝난 Plan 파일(.jmx)을 저장해두면 매번 같은 테스트를 실행 할 수 있습니다
+- 코드변경, 쿼리 튜닝 등의 개선 작업이 이루어지고 같은 테스트를 시행하여 성능 변화를 측정할 수 있습니다
+
+## 테스트 실행
+
+```bash
+jmeter -n -t plan.jmx -l results.jtl -e -o test_result
+```
+
+- Jmeter의 GUI에서도 실행이 가능하지만, 테스트 결과를 시각화한 HTML을 생성하기 위해 커맨드를 통해 실행합니다
+- 위 명령어는 jmeter 의 bin 폴더 내부에서 실행합니다
+  - Windows의 경우 Windows PowerShell을 사용할것을 추천합니다
+  - plan.jmx 는 위에서 생성한 Plan파일입니다
+  - results.jtl 은 테스트 결과를 담은 생성 파일입니다
+  - `test_result` 는 해당 이름으로 bin 폴더 내에 테스트 결과를 시각화한 HTML을 생성할 폴더입니다
+
+## 마무리
+
+> 다음 포스트에서 테스트를 실행하고, 결과를 차트로 확인하겠습니다

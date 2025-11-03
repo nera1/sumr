@@ -1,0 +1,189 @@
+---
+title: 작성 매뉴얼
+date: '2025-10-13'
+summary: 'Tailwind Next.js Starter Blog에서 MDX 글을 쓸 때 필요한 최소 규칙'
+tags: ['guide', 'mdx']
+draft: false
+authors: ['default']
+---
+
+# Manual
+
+이 문서는 **Tailwind Next.js Starter Blog** 템플릿에서 사용하는 **MDX 문법·작성 규칙**을 정리한 가이드입니다.  
+기본 마크다운 + **React 컴포넌트**를 함께 사용할 수 있습니다.
+
+<TOCInline toc={props.toc} exclude="Manual" />
+
+## Frontmatter (문서 정보)
+
+파일 최상단 `---` YAML 블록에 메타데이터를 작성합니다.
+
+```yaml
+---
+title: '포스트 제목'
+date: '2025-10-13'
+lastmod: '2025-10-13'
+summary: '요약 문장 (목차/OG에 사용)'
+tags: ['nextjs', 'tailwind', 'guide']
+images: ['/static/images/og.png']
+authors: ['default']
+layout: PostSimple
+draft: false
+canonicalUrl: https://sumr.it
+---
+자주 쓰는 필드: title, date, summary, tags, draft
+템플릿 전용 필드: images, authors, layout, lastmod
+```
+
+## 기본 마크다운 문법
+
+```yaml
+제목: #, ##, ###
+강조: **굵게**, _기울임_, ~~취소선~~
+목록: -, \*, 1.
+링크: [링크텍스트](https://example.com)
+이미지: ![대체텍스트](/static/images/sample.jpg)
+[!TIP]
+GitHub Flavored Markdown(GFM) 기반이라 표, 체크박스, 코드블록 등을 그대로 쓸 수 있습니다.
+```
+
+## 코드블록 (문법 하이라이트 + 복사 버튼)
+
+```javascript:example.js
+// 개발 서버 실행
+
+npm run dev
+
+// JavaScript 예시
+function hello(name) {
+return `Hello, ${name}!`
+}
+
+// React 예시
+import Image from "next/image"
+
+export default function Hero() {
+  return (
+    <Image
+      src="/static/images/hero.jpg"
+      alt="배너"
+      width={800}
+      height={400}
+      className="rounded-xl"
+    />
+  )
+}
+
+// 언어를 지정하면 mdx-prism으로 자동 하이라이팅되고 복사 버튼이 활성화됩니다.
+```
+
+## 이미지 다루기
+
+```yaml
+# 마크다운 방식
+![설명텍스트](/static/images/sample.jpg)
+
+# next/image 컴포넌트
+import Image from "next/image"
+
+<Image
+src="/static/images/cover.jpg"
+alt="커버 이미지"
+width={1200}
+height={630}
+className="rounded-xl"
+/>
+
+# /public/static/images 폴더에 넣어야 합니다.
+# frontmatter.images 배열에도 썸네일 이미지를 추가해 두면 미리보기에 반영됩니다.
+```
+
+## React 컴포넌트 사용
+
+```yaml
+import { Button } from '@/components/ui/button';
+
+<Button>클릭</Button>
+
+// MDX에서는 React 컴포넌트를 import 후 바로 JSX로 사용할 수 있습니다.
+// 예: <TOCInline toc={props.toc} toHeading={2} exclude="제외할 제목" />
+```
+
+## 인용문·주의박스·구분선
+
+```yaml
+> [!CAUTION]
+> 여기엔 경고 메시지를 작성하세요.
+
+---
+
+> 일반 인용문도 이렇게 작성합니다.
+```
+
+## 표·체크리스트·Tailwind 스타일링
+
+```yaml
+표 예시:
+
+| 구분       | 값           |
+| ---------- | ------------ |
+| 프레임워크 | Next.js      |
+| 스타일     | Tailwind CSS |
+
+```
+
+| 구분       | 값           |
+| ---------- | ------------ |
+| 프레임워크 | Next.js      |
+| 스타일     | Tailwind CSS |
+
+```yaml
+체크리스트 예시:
+
+- [ ] draft 해제
+- [x]  summary/tag 추가
+- [ ] 이미지 경로 확인
+```
+
+- [ ] draft 해제
+- [x] summary/tag 추가
+- [ ] 이미지 경로 확인
+
+```javascript
+// Tailwind 스타일 예시:
+
+<div className="my-6 flex justify-center">
+  <Image src="/static/images/logo.png" alt="로고" width={120} height={120} />
+</div>
+```
+
+<div className="my-6 flex justify-center">
+  <Image src="/static/images/logo.png" alt="로고" width={120} height={120} />
+</div>
+
+## 각주(Footnotes)
+
+```yaml
+# 마크다운 요소 끝에 [^1] 을 붙이면 각주 생성
+
+- 첫번째 내용 [^1]
+- 두번째 내용 [^2]
+- 세번째 내용 [^3]
+
+---
+# 마크다운 최하단에 각주 입력
+
+[^1]: 첫번째 각주입니다
+[^2]: 두번째 각주입니다
+[^3]: 세번째 각주입니다
+```
+
+- 첫번째 내용 [^1]
+- 두번째 내용 [^2]
+- 세번째 내용 [^3]
+
+[^1]: 첫번째 각주입니다
+
+[^2]: 두번째 각주입니다
+
+[^3]: 세번째 각주입니다
