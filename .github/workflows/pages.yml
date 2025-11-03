@@ -1,5 +1,4 @@
-# .github/workflows/pages.yml
-name: sumr
+name: Sumr
 
 on:
   push:
@@ -20,14 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Enable Corepack
         run: corepack enable
-
       - name: Restore Yarn cache
         uses: actions/cache@v4
         with:
@@ -39,18 +35,31 @@ jobs:
         with:
           enablement: true
 
+      # 커스텀 도메인(sumr.it) ⇒ BASE_PATH=""
+      - name: Compute BASE_PATH
+        run: |
+          if [[ "${{ steps.configurepages.outputs.base_url }}" == https://sumr.it* ]]; then
+            echo "BASE_PATH=" >> "$GITHUB_ENV"
+          else
+            echo "BASE_PATH=${{ steps.configurepages.outputs.base_path }}" >> "$GITHUB_ENV"
+          fi
+          echo "Resolved BASE_PATH=${BASE_PATH}"
+
       - name: Install deps (Yarn 4)
         run: yarn install --immutable
         env:
           GITHUB_PAGES: true
 
-      # ✅ next build 만 실행 (EXPORT=1 이므로 out/ 생성됨)
+      # Next 15: build만으로 out/ 생성 (EXPORT=1)
       - name: Build (Next.js static export)
         run: yarn build
         env:
           EXPORT: 1
           UNOPTIMIZED: 1
-          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
+          BASE_PATH: ${{ env.BASE_PATH }}
+
+      - name: Add .nojekyll
+        run: mkdir -p out && touch out/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

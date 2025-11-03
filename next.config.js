@@ -1,3 +1,4 @@
+// next.config.js
 const { withContentlayer } = require('next-contentlayer2')
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
@@ -17,84 +18,50 @@ const ContentSecurityPolicy = `
 `
 
 const securityHeaders = [
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
-  {
-    key: 'Content-Security-Policy',
-    value: ContentSecurityPolicy.replace(/\n/g, ''),
-  },
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
-  {
-    key: 'Referrer-Policy',
-    value: 'strict-origin-when-cross-origin',
-  },
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
-  {
-    key: 'X-Frame-Options',
-    value: 'DENY',
-  },
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
-  {
-    key: 'X-Content-Type-Options',
-    value: 'nosniff',
-  },
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-DNS-Prefetch-Control
-  {
-    key: 'X-DNS-Prefetch-Control',
-    value: 'on',
-  },
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
-  {
-    key: 'Strict-Transport-Security',
-    value: 'max-age=31536000; includeSubDomains',
-  },
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy
-  {
-    key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=()',
-  },
+  { key: 'Content-Security-Policy', value: ContentSecurityPolicy.replace(/\n/g, '') },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-DNS-Prefetch-Control', value: 'on' },
+  { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
 ]
 
-const output = process.env.EXPORT ? 'export' : undefined
-const basePath = process.env.BASE_PATH || undefined
-const unoptimized = process.env.UNOPTIMIZED ? true : undefined
+// === ENV → 설정 파생 ===
+const isExport = !!process.env.EXPORT
+const rawBasePath = (process.env.BASE_PATH || '').trim()
+const basePath = rawBasePath.length > 0 ? rawBasePath : undefined
+const unoptimized = !!process.env.UNOPTIMIZED
 
-/**
- * @type {import('next/dist/next-server/server/config').NextConfig}
- **/
+/** @type {import('next').NextConfig} */
 module.exports = () => {
   const plugins = [withContentlayer, withBundleAnalyzer]
   return plugins.reduce((acc, next) => next(acc), {
-    output,
+    // Next 15: next build 만으로 out/ 생성 (output: 'export')
+    output: isExport ? 'export' : undefined,
+
+    // 커스텀 도메인(sumr.it)인 경우 BASE_PATH가 빈 문자열이므로
+    // basePath/assetPrefix를 설정하지 않습니다.
     basePath,
+    assetPrefix: basePath || undefined,
+
     reactStrictMode: true,
     trailingSlash: false,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-    eslint: {
-      dirs: ['app', 'components', 'layouts', 'scripts'],
-    },
+
+    eslint: { dirs: ['app', 'components', 'layouts', 'scripts'] },
+
     images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'picsum.photos',
-        },
-      ],
+      remotePatterns: [{ protocol: 'https', hostname: 'picsum.photos' }],
       unoptimized,
     },
-    async headers() {
-      return [
-        {
-          source: '/(.*)',
-          headers: securityHeaders,
-        },
-      ]
-    },
-    webpack: (config, options) => {
-      config.module.rules.push({
-        test: /\.svg$/,
-        use: ['@svgr/webpack'],
-      })
 
+    async headers() {
+      return [{ source: '/(.*)', headers: securityHeaders }]
+    },
+
+    webpack: (config) => {
+      config.module.rules.push({ test: /\.svg$/, use: ['@svgr/webpack'] })
       return config
     },
   })
