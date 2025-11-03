@@ -24,11 +24,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      # Yarn 4는 corepack으로 버전 고정
+
       - name: Enable Corepack
         run: corepack enable
 
-      # (선택) Yarn Berry 캐시 복원 - .yarn/cache 디렉터리
       - name: Restore Yarn cache
         uses: actions/cache@v4
         with:
@@ -40,29 +39,17 @@ jobs:
         with:
           enablement: true
 
-      # ✅ Yarn 4 권장 플래그: --immutable
-      #   (레포에 .yarn/cache까지 커밋했다면 --immutable-cache도 추가 가능)
       - name: Install deps (Yarn 4)
         run: yarn install --immutable
         env:
           GITHUB_PAGES: true
 
-      # Next.js 빌드 + export (out/ 생성)
-      - name: Build
+      # ✅ next build 만 실행 (EXPORT=1 이므로 out/ 생성됨)
+      - name: Build (Next.js static export)
         run: yarn build
         env:
           EXPORT: 1
           UNOPTIMIZED: 1
-          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
-
-      - name: Export static site
-        run: |
-          if yarn -s run | grep -q "^export$"; then
-            yarn export
-          else
-            npx next export
-          fi
-        env:
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
 
       - name: Upload artifact
