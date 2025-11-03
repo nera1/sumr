@@ -1,11 +1,4 @@
 {
-  "springboot": 7,
-  "caffeine": 3,
-  "next-js": 1,
-  "guide": 2,
-  "websocket": 3,
-  "jwt": 1,
-  "interceptor": 1,
-  "jmeter": 1,
+  "guide": 1,
   "mdx": 1
 }
