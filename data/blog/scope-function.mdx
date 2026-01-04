@@ -1,0 +1,184 @@
+---
+title: Scope Functions
+date: '2025-12-03'
+summary: '코틀린의 범위 지정 함수'
+tags: ['kotlin', 'lambda']
+draft: false
+images: ['/static/images/logo.png']
+authors: ['default']
+---
+
+# Scope Functions(범위 지정 함수)
+
+객체의 컨텍스트 내부에서 코드 블록을 실행하는 함수들로 아래 다섯 함수를 가리킨다 [^1]
+
+<TOCInline toc={props.toc.filter((node) => node.depth === 3)} exclude="scope-functions" />
+
+## Lambda with receiver(수신 객체 지정 람다)
+
+수신 객체를 명시하지 않고 람다의 본문 안에서 다른 객체의 메서드를 호출할 수 있는 아래 세가지 함수를 의미한다 [^2]
+
+- with
+- apply
+- run
+
+### with
+
+객체의 이름을 반복하지 않고도 객체에 대한 다양한 연산을 수행하는 기능을 제공하는 함수
+
+```kotlin
+fun hangeul(): String {
+    val result = StringBuilder()
+    for(letter in '가'..'힣') {
+        result.append(letter)
+    }
+    return result.toString()
+}
+```
+
+- with 함수를 활용하면, 코드 내에서 반복적으로 나타나는 `result`라는 이름을 제거할 수 있다
+- with 함수에 파라미터로 전달된 객체는 블록 내에서 `this`로 접근이 가능하다
+- with 함수 내부에서는 `this`를 생략 가능하다
+
+with 함수를 활용하여 위 코드는 아래와 같이 리팩토링 가능하다
+
+```kotlin
+fun hangeul() = with(StringBuilder()) {
+    for (letter in '가'..'힣') {
+        append(letter)
+    }
+    toString()
+}
+```
+
+- with 함수가 호출되는 클래스에 with 함수 내부에서 호출되는 메서드와 같은 이름의 메서드가 존재한다면 @OuterClass 레이블을 사용해야한다
+- 아래는 with 내부에서 with 함수 밖에 정의된 메서드를 호출하는 구문이다
+
+```kotlin
+this@OuterClass.toString()
+```
+
+### apply
+
+with 와 거의 동일하게 작동하는 함수, 자신에게 전달된 수신 객체를 반환한다
+
+```kotlin
+val result : String = StringBuilder().apply {
+    for(letter in '가'..'힣') {
+        append(letter)
+    }
+}.toString()
+```
+
+인스턴스를 만들면서 즉시 프로퍼티 중 일부를 초기화해야 하는 경우 유용하다
+
+```kotlin
+fun createViewWithCustomAttributes(context: Context) =
+    TextView(context).apply {
+        text = "simple Text"
+        textSize = 20.0
+        setPadding(10, 0, 0, 0)
+    }
+```
+
+### run
+
+with 와 거의 동일하게 작동하는 함수, 람다의 결과를 리턴한다 [^3]
+
+```kotlin
+val result : String = StringBuilder().run {
+    for(letter in '가'..'힣') {
+        append(letter)
+    }
+    toString()
+}
+```
+
+apply 는 객체를 구성할 때, run 은 객체를 기반으로 계산한 결과를 필요로 할 때 사용한다
+
+```kotlin
+val result = StringBuilder()
+    .run {
+        for(letter in '가'..'힣') {
+            append(letter)
+        }
+        toString()
+    }
+    .also { result ->
+        println("[result] $result")
+    }
+
+var str : String? = "Kotlin"
+println(str?.run {"value1 = $this"})
+str = null
+println(str?.run {"value2 = $this"})
+
+/*
+    value1 = Kotlin
+    null
+*/
+```
+
+- `run` 은 수신 객체의 확장 함수이므로 체이닝이 가능하다
+- `run` 은 `null` 가능성이 있는 객체에 대해 `safe call` 이 가능하다
+
+### also
+
+- 수신 객체에 대해 어떤 동작을 수행한 후, 수신 객체를 반환한다 [^4]
+- 람다 내에서 수신 객체를 디폴트 이름인 `it`로 참조 가능하다(다른 이름으로도 참조 가능)
+
+```kotlin
+val result = mutableListOf(1, 2, 3)
+    .also { nums ->
+        println("before list: $nums")
+    }
+    .apply {
+        add(4)
+        add(5)
+    }
+    .also {
+        println("after list: $it")
+    }
+println("result = $result")
+
+/*
+    before list: [1, 2, 3]
+    after list: [1, 2, 3, 4, 5]
+    result = [1, 2, 3, 4, 5]
+*/
+```
+
+메서드 체이닝에서 수신 객체를 그대로 흘려보내며, 부가 작업을 할 때 주로 사용된다
+
+### let
+
+let 함수는 수신 객체가 `null` 아닐 때만 호출되어 수신 객체를 인자로 전달받은 람다에 넘긴다 [^5]
+
+```kotlin
+fun sayHello(who : String) {
+    println("Hello! $who")
+}
+
+var who : String? = "Kotlin"
+who?.let { w -> sayHello(w) }
+who = "Nera"
+println(who?.let { name -> "Keep going $name!" })
+
+/*
+    Hello! Kotlin
+    Keep going Nera!
+*/
+```
+
+- `null` 타입 검사를 편리하게 수행 가능 하다
+- let 함수는 람다의 결과를 리턴한다
+
+[^1]: https://kotlinlang.org/docs/scope-functions.html
+
+[^2]: Kotlin in Action 2/e 5.4
+
+[^3]: https://kotlinlang.org/docs/scope-functions.html#run
+
+[^4]: Kotlin in Action 2/e 5.4.3
+
+[^5]: Kotlin in Action 2/e 7.8
